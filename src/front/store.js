@@ -1,38 +1,31 @@
-export const initialStore=()=>{
-  return{
+export const initialStore = () => {
+  return {
     message: null,
-    todos: [
-      {
-        id: 1,
-        title: "Make the bed",
-        background: null,
-      },
-      {
-        id: 2,
-        title: "Do my homework",
-        background: null,
-      }
-    ]
-  }
-}
+    auth: sessionStorage.getItem("token") ? true : false,
 
-export default function storeReducer(store, action = {}) {
-  switch(action.type){
-    case 'set_hello':
+    // Crear la logica de auth en el store para que este disponible en varios componentes
+    // Utilizar dispatch en el componente form para cambiar de auth de false a true
+    // En el navbar mostrar el boton de logout solo si esta logeado utilizando la misma variable
+    // Mostrar solo los formularios si se está logueado utilizando lo mismo en un ternario
+    // Si no se esta logeado redireccionar con <Navigate />
+  };
+};
+
+export default function storeReducer(state = initialStore(), action = {}) {
+  switch (action.type) {
+    case "set_hello":
       return {
-        ...store,
-        message: action.payload
+        ...state,
+        message: action.payload,
       };
-      
-    case 'add_task':
 
-      const { id,  color } = action.payload
+    case "login_success":
+      return { ...state, auth: true };
 
-      return {
-        ...store,
-        todos: store.todos.map((todo) => (todo.id === id ? { ...todo, background: color } : todo))
-      };
+    case "logout":
+      return { ...state, auth: false };
+
     default:
-      throw Error('Unknown action.');
-  }    
+      throw Error("Unknown action.");
+  }
 }

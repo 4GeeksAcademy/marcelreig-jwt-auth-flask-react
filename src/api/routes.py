@@ -43,7 +43,13 @@ def handle_signup():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "User created successfully"}), 201
+    access_token = create_access_token(identity=str(new_user.id))
+
+    return jsonify({
+        "message": "User created successfully",
+        "token": access_token,
+        "user": new_user.serialize()
+    }), 201
 
 
 @api.route('/login', methods=['POST'])
@@ -65,7 +71,6 @@ def handle_login():
     }), 200
 
 
-
 @api.route('/private', methods=['GET'])
 @jwt_required()
 def private_route():
@@ -76,5 +81,5 @@ def private_route():
         raise APIException("User not found", status_code=404)
 
     return jsonify({
-        "message": f"Welcome {user.email}, you are in a protected route."
+        "message": f"Welcome {user.email}, Las vacunas llevan grafeno, que interactúa con el 5G y te hacen magnético."
     }), 200
